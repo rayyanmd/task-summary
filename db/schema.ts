@@ -1,15 +1,15 @@
 import { defineRelations } from "drizzle-orm"
 import { integer, pgEnum, pgTable, text, timestamp } from "drizzle-orm/pg-core"
 
-export const courses = pgTable("courses", {
-  id: integer().primaryKey(),
+export const courseTable = pgTable("courses", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
   name: text(),
 })
 
 export const typeEnum = pgEnum("types", ["individual", "group"])
 
-export const assignments = pgTable("assignments", {
-  id: integer().primaryKey(),
+export const assignmentTable = pgTable("assignments", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
   title: text(),
   courseId: integer("course_id"),
   deadline: timestamp(),
@@ -22,9 +22,15 @@ export const assignments = pgTable("assignments", {
     .$onUpdate(() => new Date()),
 })
 
-export const relations = defineRelations({ courses, assignments }, (r) => ({
-  assignments: {
-    course: r.one.courses({ from: r.assignments.courseId, to: r.courses.id }),
-  },
-  courses: { assignments: r.many.assignments() },
-}))
+export const relations = defineRelations(
+  { courseTable, assignmentTable },
+  (r) => ({
+    assignmentTable: {
+      course: r.one.courseTable({
+        from: r.assignmentTable.courseId,
+        to: r.courseTable.id,
+      }),
+    },
+    courseTable: { assignmentTable: r.many.assignmentTable() },
+  })
+)
