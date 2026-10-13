@@ -22,9 +22,7 @@ export default async function Page() {
   return (
     <div className="space-y-4 p-6">
       <div>
-        <h1 className="text-2xl font-black tracking-tight">
-          Tumpukan Tugas SS23
-        </h1>
+        <h1 className="text-2xl font-bold">Tumpukan Tugas SS23</h1>
         <p className="text-sm font-light text-muted-foreground">
           jangan lupa dikerjain yaa...
         </p>

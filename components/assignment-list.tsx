@@ -26,6 +26,7 @@ import { Badge } from "./ui/badge"
 import { Button } from "./ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
 import Link from "next/link"
+import { Skeleton } from "./ui/skeleton"
 
 function formatDeadline(deadline: Date | null) {
   if (!deadline) return "Tidak ada deadline"
@@ -98,11 +99,13 @@ export default function AssignmentList({
     submission: string | null
   }[]
 }) {
+  const [isLoading, setIsLoading] = useState(true)
   const [completedAssignments, setCompletedAssignments] = useState<Set<number>>(
     new Set()
   )
 
   useEffect(() => {
+    setIsLoading(false)
     const stored = localStorage.getItem("completed-assignments")
     if (!stored) return
 
@@ -144,7 +147,11 @@ export default function AssignmentList({
             </CardTitle>
           </CardHeader>
           <CardContent className="text-4xl font-bold">
-            {assignments.length - completed}
+            {isLoading ? (
+              <Skeleton className="h-10 w-10" />
+            ) : (
+              assignments.length - completed
+            )}
           </CardContent>
         </Card>
 
@@ -155,7 +162,9 @@ export default function AssignmentList({
               <span>Sudah Dikerjakan</span>
             </CardTitle>
           </CardHeader>
-          <CardContent className="text-4xl font-bold">{completed}</CardContent>
+          <CardContent className="text-4xl font-bold">
+            {isLoading ? <Skeleton className="h-10 w-10" /> : completed}
+          </CardContent>
         </Card>
 
         <Card className="flex w-full flex-col justify-between">
@@ -166,7 +175,11 @@ export default function AssignmentList({
             </CardTitle>
           </CardHeader>
           <CardContent className="text-4xl font-bold">
-            {(completed / assignments.length) * 100}%
+            {isLoading ? (
+              <Skeleton className="h-10 w-20" />
+            ) : (
+              (completed / assignments.length) * 100 + "%"
+            )}
           </CardContent>
         </Card>
       </div>
